@@ -124,3 +124,30 @@ check_precedents.py   판례 선정 스크립트
 ```
 
 수집 · 색인 · 검색 · 생성 · 화면을 모듈로 나눴다 (NF2005).
+
+## 6. 심화 기능 적용 요약
+
+심화 기능은 F2014, F2015, F2016을 선택했다. F2013(프론트엔드 직접 구현)은 선택하지 않았다.
+
+| 번호 | 적용 내용 | 결과 |
+| --- | --- | --- |
+| F2014 | 후보 30건에서 MMR로 근거를 고른다. 화면 "검색 설정"에서 켠다 | 서로 다른 문서 6 → 7개, 같은 조문 중복 청크가 빠짐. 관련도가 낮은 문서도 들어와 기본값은 유사도 검색 |
+| F2015 | 대표 질문 6개를 RAG 없이·RAG로 답하게 해 세 기준으로 비교했다 | RAG 없이 4문항에서 틀리거나 없는 조문(예: "민법 제635조의2")을 댔다. RAG는 정답이 있는 5문항을 모두 맞혔고, 문서에 없는 질문에는 확인되지 않는다고 답했다 |
+| F2016 | 판례 메타데이터, 법령 조문, 판결문 전문을 함께 색인하고 근거마다 종류를 표시한다 | 판례는 1건 1청크, 법령·판결문은 1,000자 청크. 근거 목록에 판례 메타데이터 / 법령 / 판결문 태그 |
+
+자세한 비교는 [results/compare_summary.md](results/compare_summary.md)에 있다.
+
+## 7. 제출물
+
+| 산출물 | 파일 |
+| --- | --- |
+| 요구사항 정의서 | 임대차_판례_RAG_요구사항정의서 (docx) |
+| RAG 파이프라인 설계문서 | [docs/rag_pipeline_design.md](docs/rag_pipeline_design.md) |
+| 검증 결과: 요구사항 대조표 | [docs/traceability.md](docs/traceability.md) |
+| 검증 결과: 테스트 결과표 | [docs/test_results.md](docs/test_results.md) |
+| 검증 결과: 확인 항목별 실행 화면 | [docs/screenshots/](docs/screenshots/) |
+| 검증 결과: 심화 기능과 필수 결과 비교 | [results/compare_summary.md](results/compare_summary.md) |
+| 셀프 체크리스트, 제출 전 점검 | [docs/verification.md](docs/verification.md) |
+| 상호 체크리스트 | [docs/peer_checklist.md](docs/peer_checklist.md) |
+| 구현 소스코드 | 이 저장소 (수집·색인 스크립트, 심화 기능 코드 포함) |
+| README | 이 문서 |

@@ -44,13 +44,23 @@
 | API 키 없음 안내 | `.env`의 GMS_KEY를 잠시 비우고 실행 | "GMS_KEY가 설정되지 않았습니다..." 안내만 표시, 오류 추적 없음 | 통과 | 4-4_no_key.png |
 | 법률 자문 아님 안내 | 화면 상단 | 경고 상자 표시 | 통과 | |
 
-## 4.5 심화 기능 (F2014 ~ F2016)
+## 4.5 심화 기능 (F2013 ~ F2016)
 
 | 확인 항목 | 방법 | 결과 | 상태 |
 | --- | --- | --- | --- |
+| F2013 프론트엔드 직접 구현 | - | 선택하지 않음 | 해당 없음 |
 | F2014 유사도·MMR 근거 차이 | `python compare.py mmr` → results/compare_mmr.md | 서로 다른 문서 6 → 7개 | 통과 |
 | F2015 RAG 전후 답변 | `python compare.py rag` → results/compare_summary.md | RAG 없이 4문항 조문 오류, RAG 5문항 정답 | 통과 |
 | F2016 출처 종류 구분 표시 | 근거 목록 | 판례 메타데이터 / 법령 / 판결문 (4-3_source_types.png) | 통과 |
+
+## 4.6 RAG 사용 전후 품질 비교
+
+| 확인 항목 | 결과 | 상태 |
+| --- | --- | --- |
+| 대표 질문 5개 이상, 근거 없이 틀리기 쉬운 질문 | 6개 (Q1~Q6, Q6은 문서에 없는 질문) | 통과 |
+| RAG 없이 한 번, 근거를 붙여 한 번 답하고 나란히 기록 | results/compare_rag.md | 통과 |
+| 사실 정확성, 근거 제시, 모르는 것을 모른다고 답함 세 기준 비교 | results/compare_summary.md 1.2 ~ 1.4 | 통과 |
+| 비교 결과 문서 | results/compare_summary.md | 통과 |
 
 ## 4.7 비기능 요구사항 (NF2001 ~ NF2007)
 
@@ -69,8 +79,8 @@
 
 | 항목 | 상태 |
 | --- | --- |
-| F2001 ~ F2012 모두 동작 | 통과 (4.1 ~ 4.4 모든 항목 통과) |
-| 심화 기능 동작, 필수 결과와 비교 | 통과 (results/compare_summary.md) |
-| 스크린샷 첨부 | 통과: docs/screenshots/ 의 4-3_no_citation, 4-3_sources, 4-3_source_types, 4-4_case_a, 4-4_case_b, 4-4_no_key, 4-4_no_index |
-| 요구사항 정의서 · 설계문서 · 소스코드 · README | 설계문서·소스·README 있음. 요구사항 정의서 docx의 판례 수(240 → 237 사용 가능, 159 선정) 수정 필요 |
-| 요구사항 대조표 · 테스트 결과표 · 셀프/상호 체크리스트 | 셀프는 이 문서. 상호 체크리스트는 옆 교육생과 진행 |
+| 필수 기능 F2001 ~ F2012 모두 동작 | 통과 (4.1 ~ 4.4 모든 항목 통과) |
+| 선택한 심화 기능 동작, 필수 결과와 비교 | F2014·F2015·F2016 통과 (results/compare_summary.md) |
+| 증명 스크린샷 모두 첨부 | 통과: 캡처 7장 (docs/screenshots/) |
+| 요구사항 정의서 · RAG 파이프라인 설계문서 · 소스코드 · README.md | 모두 있음. 정의서는 v2(판례 237건 사용 가능, 159건 선정)로 수정 완료 |
+| 검증 결과: 요구사항 대조표 · 테스트 결과표 · 셀프 · 상호 체크리스트 | 대조표 [traceability.md](traceability.md), 테스트 결과표 [test_results.md](test_results.md), 셀프 체크리스트 이 문서, 상호 체크리스트 [peer_checklist.md](peer_checklist.md) (옆 교육생과 진행 전) |

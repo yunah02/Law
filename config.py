@@ -13,6 +13,7 @@ RAW_DIR = DATA_DIR / "raw"                       # API 응답 캐시 (Git 제외
 ITEMS_JSON = DATA_DIR / "items_selected.json"    # check_precedents.py 결과 (판례 159건)
 SUMMARIES_JSON = DATA_DIR / "summaries.json"     # 일상어 요약·한 줄 제목 (한 번 생성해 저장)
 CHROMA_DIR = BASE_DIR / "chroma_db"              # Vector DB (Git 제외)
+COLLECTED_JSON = DATA_DIR / "collected.json"     # 이미 수집한 검색어 기록 (NF2002)
 
 # ---------------------------------------------------------------- LLM (SSAFY GMS)
 GMS_BASE_URL = "https://gms.ssafy.io/gmsapi/api.openai.com/v1/"
@@ -22,6 +23,14 @@ EMBED_MODEL = "text-embedding-3-small"
 # ---------------------------------------------------------------- 컬렉션
 PRECEDENT_COLLECTION = "precedents"   # RAG 1: 판례 1건 = 청크 1개
 LEGAL_DOC_COLLECTION = "legal_docs"   # RAG 2: 법령 조문, 판결문 전문, 해석례
+
+# ---------------------------------------------------------------- 외부 문서 수집 (법제처 Open API)
+LAW_LIST_URL = "https://www.law.go.kr/DRF/lawSearch.do"
+LAW_DETAIL_URL = "https://www.law.go.kr/DRF/lawService.do"
+API_SLEEP = 0.4          # 호출 간격(초). NF2006
+API_RETRIES = 3
+USE_EXPC = False         # 법령해석례 사용 여부. 신청·호출을 확인한 뒤 True로 바꾼다
+MAX_CANDIDATES = 20      # 선별 프롬프트에 보여 줄 후보 문서 수
 
 # ---------------------------------------------------------------- 색인
 MAX_INDEX_CHARS = 3000   # 판례 색인 텍스트 최대 길이. 넘으면 판결요지 뒤쪽을 줄인다

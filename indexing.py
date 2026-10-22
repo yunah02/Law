@@ -3,6 +3,7 @@
 실행 (law 폴더에서):
     python indexing.py precedents              # 일상어 요약 생성(캐시) + 판례 색인
     python indexing.py precedents --no-summary # 요약 없이 바로 색인 (빠른 확인용)
+    python indexing.py laws                    # (선택) 법령 4개의 모든 조문을 미리 색인
     python indexing.py count                   # 컬렉션별 청크 수 (검증 4.1)
     python indexing.py show 619451             # 판례 1건의 색인 텍스트 출력 (검증 4.1)
     python indexing.py search "집주인이 보증금을 안 돌려줘요"   # 판례 검색 맛보기
@@ -51,6 +52,7 @@ def main() -> None:
     sub = parser.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("precedents")
     p.add_argument("--no-summary", action="store_true")
+    sub.add_parser("laws")
     sub.add_parser("count")
     s = sub.add_parser("show")
     s.add_argument("case_id")
@@ -61,6 +63,14 @@ def main() -> None:
 
     if args.cmd == "precedents":
         index_precedents(use_summary=not args.no_summary)
+    elif args.cmd == "laws":
+        from collect import index_docs
+        from data_prep import law_api
+
+        store = get_store(config.LEGAL_DOC_COLLECTION)
+        arts = [{**a, "query": "(전체 색인)"} for a in law_api.all_articles()]
+        docs, chunks, _ = index_docs(store, arts, lambda d: "common")
+        print(f"조문 {len(arts)}개 중 새로 색인 {docs}개 (청크 {chunks}개), legal_docs 전체 {store._collection.count()}개")
     elif args.cmd == "count":
         for name in (config.PRECEDENT_COLLECTION, config.LEGAL_DOC_COLLECTION):
             print(f"{name}: {count(name)}건")

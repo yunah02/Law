@@ -18,7 +18,7 @@ from collect import case_brief
 from prompts import ANSWER_PROMPT
 from retrieval import retrieve
 
-CITE_PATTERN = re.compile(r"\[근거\s*([\d,\s]+)\]")
+CITE_PATTERN = re.compile(r"\[근거[^\]]*\]")  # [근거 3], [근거 1, 3], [근거 4, 근거 3] 모두 읽는다
 NOT_FOUND = "제공된 문서에서 확인되지 않습니다."
 PRECEDENT_NOTE = "※ 인용한 판례는 선고 당시의 법령을 기준으로 한 판단입니다. 현재 법령과 다를 수 있습니다."
 
@@ -48,7 +48,15 @@ def format_history(history: list[dict]) -> str:
 
 
 def cited_numbers(answer: str) -> set[int]:
-    return {int(n) for group in CITE_PATTERN.findall(answer) for n in group.split(",") if n.strip().isdigit()}
+    return {int(n) for tag in CITE_PATTERN.findall(answer) for n in re.findall(r"\d+", tag)}
+
+
+def tidy(answer: str) -> str:
+    """화면에서 깨지는 마크다운을 정리한다.
+    - 굵게(**)는 한글 조사와 붙으면 표시되지 않고 별표가 그대로 남는다. 모두 지운다.
+    - 제목(#)은 채팅 안에서 너무 크다. 일반 줄로 바꾼다."""
+    answer = answer.replace("**", "")
+    return re.sub(r"(?m)^\s*#{1,6}\s*", "", answer)
 
 
 def cited_sources(answer: str, evidence: list[dict]) -> list[tuple[int, dict]]:
@@ -71,7 +79,7 @@ def build_graph(model, prec_store, doc_store):
             case=case_brief(state.get("item")), history=format_history(state.get("history", [])),
             context=format_context(evidence), question=state["question"],
         )
-        answer = model.invoke(prompt).content.strip()
+        answer = tidy(model.invoke(prompt).content.strip())
         # 판례를 인용했으면 선고 당시 법령 기준 안내를 반드시 붙인다. 프롬프트에만 맡기면 빠질 때가 있다
         if any(ev["source_type"] in ("판례", "판결문") for _, ev in cited_sources(answer, evidence)):
             answer += "\n\n" + PRECEDENT_NOTE

@@ -41,3 +41,5 @@ CHUNK_OVERLAP = 200      # 외부 문서 청크 중복 길이 (자)
 TOP_K = 6                # 외부 문서에서 가져올 근거 수
 SEARCH_TYPE = "similarity"   # "similarity" 또는 "mmr" (F2014)
 MMR_FETCH_K = 30         # MMR일 때 먼저 넉넉히 가져올 후보 수
+GENERAL_PRECEDENT_K = 2  # 판례를 고르지 않은 일반 질문에서 함께 볼 판례 수
+HISTORY_TURNS = 4        # 답변 생성에 넘길 이전 대화 수 (질문·답변 합쳐서)

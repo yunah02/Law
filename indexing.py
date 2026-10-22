@@ -7,6 +7,7 @@
     python indexing.py count                   # 컬렉션별 청크 수 (검증 4.1)
     python indexing.py show 619451             # 판례 1건의 색인 텍스트 출력 (검증 4.1)
     python indexing.py search "집주인이 보증금을 안 돌려줘요"   # 판례 검색 맛보기
+    python indexing.py chunks                  # 청크 크기·중복 길이별 법령 조문 청크 수 비교 (검증 4.2, 색인은 바꾸지 않음)
 
 같은 판례를 다시 색인해도 ID(판례일련번호)가 같아 덮어쓰기만 일어난다.
 """
@@ -59,6 +60,7 @@ def main() -> None:
     q = sub.add_parser("search")
     q.add_argument("query")
     q.add_argument("-k", type=int, default=5)
+    sub.add_parser("chunks")
     args = parser.parse_args()
 
     if args.cmd == "precedents":
@@ -87,6 +89,23 @@ def main() -> None:
         hits = get_store(config.PRECEDENT_COLLECTION).similarity_search_with_score(args.query, k=args.k)
         for doc, score in hits:
             print(f"{score:.3f}  {doc.metadata['display_name']}")
+    elif args.cmd == "chunks":
+        compare_chunking()
+
+
+def compare_chunking(settings=((500, 100), (1000, 200), (2000, 200))) -> None:
+    """법령 4개의 모든 조문을 설정별로 잘라 청크 수를 센다. Vector DB에는 쓰지 않는다."""
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+    from data_prep import law_api
+
+    arts = law_api.all_articles()
+    print(f"조문 {len(arts)}개 (현재 설정: {config.CHUNK_SIZE}/{config.CHUNK_OVERLAP})")
+    for size, overlap in settings:
+        splitter = RecursiveCharacterTextSplitter(chunk_size=size, chunk_overlap=overlap)
+        counts = [len(splitter.split_text(a["text"]) or [a["text"]]) for a in arts]
+        print(f"  크기 {size:>4} / 중복 {overlap:>3}: 청크 {sum(counts):>4}개, 2개 이상으로 나뉜 조문 {sum(c > 1 for c in counts)}개, "
+              f"가장 많이 나뉜 조문 {max(counts)}개")
 
 
 if __name__ == "__main__":

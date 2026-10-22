@@ -79,8 +79,7 @@ def display_name(item: dict, summary: dict | None) -> str:
 
 
 def source_url(case_id: str) -> str:
-    """인증키가 없는 판례 원문 주소 (NF2004). 판례상세링크는 인증키가 들어 있어 쓰지 않는다.
-    TODO: 브라우저에서 열리는지 한 번 확인할 것."""
+    """인증키가 없는 판례 원문 주소 (NF2004). 판례상세링크는 인증키가 들어 있어 쓰지 않는다."""
     return f"https://www.law.go.kr/LSW/precInfoP.do?precSeq={case_id}"
 
 

@@ -1,0 +1,11 @@
+# 키와 가상환경 (올리면 안 되는 파일)
+.env
+src/.env
+venv/
+.venv/
+
+# 다시 만들 수 있는 파일
+chroma_db/
+data/raw/
+__pycache__/
+*.pyc
